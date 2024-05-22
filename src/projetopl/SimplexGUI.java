@@ -1,9 +1,9 @@
 package projetopl;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.*;
 
 public class SimplexGUI extends JFrame {
     private JTextField[][] coeficientes;
@@ -57,6 +57,7 @@ public class SimplexGUI extends JFrame {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 coeficientes[i][j] = new JTextField(5);
+                coeficientes[i][j].setPreferredSize(new Dimension(80, 30));
                 inputPanel.add(coeficientes[i][j]);
             }
         }
@@ -151,14 +152,5 @@ public class SimplexGUI extends JFrame {
             }
             resultadoArea.append("\n");
         }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                SimplexGUI frame = new SimplexGUI();
-                frame.setVisible(true);
-            }
-        });
     }
 }
