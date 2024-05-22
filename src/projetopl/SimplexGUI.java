@@ -7,8 +7,11 @@ import java.awt.event.ActionListener;
 
 public class SimplexGUI extends JFrame {
     private JTextField[][] coeficientes;
-    private JButton calcularButton;
+    private JPanel inputPanel;
+    private JButton calcularButton, addRowButton, addColumnButton;
     private JTextArea resultadoArea;
+    private int rows = 4;
+    private int cols = 4;
 
     public SimplexGUI() {
         setTitle("Método Simplex");
@@ -16,19 +19,21 @@ public class SimplexGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        JPanel inputPanel = new JPanel(new GridLayout(3, 5, 10, 10));
-        coeficientes = new JTextField[3][5];
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 5; j++) {
-                coeficientes[i][j] = new JTextField(5);
-                inputPanel.add(coeficientes[i][j]);
-            }
-        }
+        inputPanel = new JPanel(new GridLayout(rows, cols, 10, 10));
+        coeficientes = new JTextField[rows][cols];
+        initializeTable();
 
         JPanel buttonPanel = new JPanel();
         calcularButton = new JButton("Calcular");
         calcularButton.addActionListener(new CalcularListener());
+        addRowButton = new JButton("Adicionar Linha");
+        addRowButton.addActionListener(new AddRowListener());
+        addColumnButton = new JButton("Adicionar Coluna");
+        addColumnButton.addActionListener(new AddColumnListener());
+
         buttonPanel.add(calcularButton);
+        buttonPanel.add(addRowButton);
+        buttonPanel.add(addColumnButton);
 
         resultadoArea = new JTextArea();
         resultadoArea.setEditable(false);
@@ -39,18 +44,48 @@ public class SimplexGUI extends JFrame {
         add(new JScrollPane(resultadoArea), BorderLayout.SOUTH);
     }
 
+    private void initializeTable() {
+        inputPanel.removeAll();
+        inputPanel.setLayout(new GridLayout(rows, cols, 10, 10));
+        coeficientes = new JTextField[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                coeficientes[i][j] = new JTextField(5);
+                inputPanel.add(coeficientes[i][j]);
+            }
+        }
+        inputPanel.revalidate();
+        inputPanel.repaint();
+    }
+
+    private class AddRowListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            rows++;
+            initializeTable();
+        }
+    }
+
+    private class AddColumnListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            cols++;
+            initializeTable();
+        }
+    }
+
     private class CalcularListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                float[][] padronizado = new float[3][5];
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 5; j++) {
+                float[][] padronizado = new float[rows][cols];
+                for (int i = 0; i < rows; i++) {
+                    for (int j = 0; j < cols; j++) {
                         padronizado[i][j] = Float.parseFloat(coeficientes[i][j].getText());
                     }
                 }
 
-                Simplex simplex = new Simplex(2, 4);
+                Simplex simplex = new Simplex(rows - 1, cols - 1);
                 simplex.preencherTabela(padronizado);
 
                 boolean sair = false;
@@ -86,5 +121,14 @@ public class SimplexGUI extends JFrame {
             }
             resultadoArea.append("\n");
         }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                SimplexGUI frame = new SimplexGUI();
+                frame.setVisible(true);
+            }
+        });
     }
 }
