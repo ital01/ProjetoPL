@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 public class SimplexGUI extends JFrame {
     private JTextField[][] coeficientes;
     private JPanel inputPanel;
-    private JButton calcularButton, addRowButton, addColumnButton;
+    private JButton calcularButton, addRowButton, addColumnButton, removeRowButton, removeColumnButton;
     private JTextArea resultadoArea;
     private int rows = 4;
     private int cols = 4;
@@ -30,10 +30,16 @@ public class SimplexGUI extends JFrame {
         addRowButton.addActionListener(new AddRowListener());
         addColumnButton = new JButton("Adicionar Coluna");
         addColumnButton.addActionListener(new AddColumnListener());
+        removeRowButton = new JButton("Remover Linha");
+        removeRowButton.addActionListener(new RemoveRowListener());
+        removeColumnButton = new JButton("Remover Coluna");
+        removeColumnButton.addActionListener(new RemoveColumnListener());
 
         buttonPanel.add(calcularButton);
         buttonPanel.add(addRowButton);
         buttonPanel.add(addColumnButton);
+        buttonPanel.add(removeRowButton);
+        buttonPanel.add(removeColumnButton);
 
         resultadoArea = new JTextArea();
         resultadoArea.setEditable(false);
@@ -71,6 +77,30 @@ public class SimplexGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             cols++;
             initializeTable();
+        }
+    }
+
+    private class RemoveRowListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (rows > 1) {
+                rows--;
+                initializeTable();
+            } else {
+                JOptionPane.showMessageDialog(SimplexGUI.this, "Não é possível remover todas as linhas.", "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private class RemoveColumnListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (cols > 1) {
+                cols--;
+                initializeTable();
+            } else {
+                JOptionPane.showMessageDialog(SimplexGUI.this, "Não é possível remover todas as colunas.", "Erro", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
